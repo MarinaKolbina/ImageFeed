@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B376EE5A29354BBC00161149 /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376EE5929354BBC00161149 /* ImagesListCell.swift */; };
+		B376EE5D29436F4300161149 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376EE5C29436F4300161149 /* ProfileViewController.swift */; };
 		B3820A76292C066400CBB840 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3820A75292C066400CBB840 /* AppDelegate.swift */; };
 		B3820A78292C066400CBB840 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3820A77292C066400CBB840 /* SceneDelegate.swift */; };
 		B3820A7A292C066400CBB840 /* ImagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3820A79292C066400CBB840 /* ImagesListViewController.swift */; };
@@ -18,6 +19,7 @@
 
 /* Begin PBXFileReference section */
 		B376EE5929354BBC00161149 /* ImagesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
+		B376EE5C29436F4300161149 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		B3820A72292C066400CBB840 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3820A75292C066400CBB840 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B3820A77292C066400CBB840 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -48,6 +50,14 @@
 			path = ImagesList;
 			sourceTree = "<group>";
 		};
+		B376EE622943765200161149 /* ProfileView */ = {
+			isa = PBXGroup;
+			children = (
+				B376EE5C29436F4300161149 /* ProfileViewController.swift */,
+			);
+			path = ProfileView;
+			sourceTree = "<group>";
+		};
 		B3820A69292C066400CBB840 = {
 			isa = PBXGroup;
 			children = (
@@ -70,6 +80,7 @@
 				B3820A75292C066400CBB840 /* AppDelegate.swift */,
 				B3820A77292C066400CBB840 /* SceneDelegate.swift */,
 				B3820A7B292C066400CBB840 /* Main.storyboard */,
+				B376EE622943765200161149 /* ProfileView */,
 				B376EE5B29354BC600161149 /* ImagesList */,
 				B3820A7E292C066500CBB840 /* Assets.xcassets */,
 				B3820A80292C066500CBB840 /* LaunchScreen.storyboard */,
@@ -151,6 +162,7 @@
 			files = (
 				B3820A7A292C066400CBB840 /* ImagesListViewController.swift in Sources */,
 				B376EE5A29354BBC00161149 /* ImagesListCell.swift in Sources */,
+				B376EE5D29436F4300161149 /* ProfileViewController.swift in Sources */,
 				B3820A76292C066400CBB840 /* AppDelegate.swift in Sources */,
 				B3820A78292C066400CBB840 /* SceneDelegate.swift in Sources */,
 			);
