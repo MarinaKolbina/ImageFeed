@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -27,8 +28,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="393" height="154"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="d7O-7U-Kcw" userLabel="Cell Image">
-                                                    <rect key="frame" x="20" y="11" width="343" height="143"/>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="d7O-7U-Kcw" userLabel="Cell Image">
+                                                    <rect key="frame" x="16" y="4" width="361" height="146"/>
                                                     <accessibility key="accessibilityConfiguration" identifier="cellImage"/>
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -38,13 +39,13 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SEf-nL-RTr" userLabel="Like Button">
-                                                    <rect key="frame" x="333.66666666666669" y="15" width="29.333333333333314" height="26"/>
+                                                    <rect key="frame" x="337.66666666666669" y="16" width="29.333333333333314" height="26"/>
                                                     <accessibility key="accessibilityConfiguration" identifier="likeButton"/>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" image="like_button_on"/>
                                                 </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="29 ноября 2022" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w6q-yD-g2B" userLabel="Date Label">
-                                                    <rect key="frame" x="28.000000000000007" y="127.33333333333333" width="101.66666666666669" height="15.666666666666671"/>
+                                                    <rect key="frame" x="24.000000000000007" y="126.33333333333333" width="101.66666666666669" height="15.666666666666671"/>
                                                     <accessibility key="accessibilityConfiguration" identifier="dateLabel"/>
                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
                                                     <color key="textColor" name="YP White"/>
@@ -55,12 +56,12 @@
                                                 <constraint firstItem="w6q-yD-g2B" firstAttribute="leading" secondItem="d7O-7U-Kcw" secondAttribute="leading" constant="8" id="4jb-4X-XRu"/>
                                                 <constraint firstItem="d7O-7U-Kcw" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="w6q-yD-g2B" secondAttribute="trailing" constant="-8" id="DNC-xK-dpT"/>
                                                 <constraint firstItem="SEf-nL-RTr" firstAttribute="top" secondItem="d7O-7U-Kcw" secondAttribute="top" constant="12" id="E1B-xU-KDJ"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="d7O-7U-Kcw" secondAttribute="trailing" id="Lxe-9H-DJD"/>
+                                                <constraint firstAttribute="trailing" secondItem="d7O-7U-Kcw" secondAttribute="trailing" constant="16" id="Lxe-9H-DJD"/>
                                                 <constraint firstItem="d7O-7U-Kcw" firstAttribute="bottom" secondItem="w6q-yD-g2B" secondAttribute="bottom" constant="8" id="Nrg-q8-VKM"/>
-                                                <constraint firstItem="d7O-7U-Kcw" firstAttribute="top" secondItem="1Xo-54-8rD" secondAttribute="topMargin" constant="-8" id="PL1-0p-ltg"/>
-                                                <constraint firstItem="d7O-7U-Kcw" firstAttribute="leading" secondItem="1Xo-54-8rD" secondAttribute="leadingMargin" id="Wlr-1L-pHN"/>
+                                                <constraint firstItem="d7O-7U-Kcw" firstAttribute="top" secondItem="1Xo-54-8rD" secondAttribute="top" constant="4" id="PL1-0p-ltg"/>
+                                                <constraint firstItem="d7O-7U-Kcw" firstAttribute="leading" secondItem="1Xo-54-8rD" secondAttribute="leading" constant="16" id="Wlr-1L-pHN"/>
                                                 <constraint firstItem="d7O-7U-Kcw" firstAttribute="trailing" secondItem="SEf-nL-RTr" secondAttribute="trailing" constant="10" id="nG7-Fg-b2a"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="d7O-7U-Kcw" secondAttribute="bottom" constant="-8" id="tNE-Km-eLf"/>
+                                                <constraint firstAttribute="bottom" secondItem="d7O-7U-Kcw" secondAttribute="bottom" constant="4" id="tNE-Km-eLf"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="YP Black"/>
@@ -135,9 +136,6 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="logout_button"/>
-                                <connections>
-                                    <action selector="logOutButtonDidTap:" destination="UDy-eJ-ovQ" eventType="touchUpInside" id="4iK-jB-rRj"/>
-                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="LLR-C1-qfw"/>
@@ -155,13 +153,6 @@
                             <constraint firstItem="Epw-iJ-k7f" firstAttribute="top" secondItem="yFU-K0-7s9" secondAttribute="bottom" constant="8" id="s8a-vZ-n7J"/>
                         </constraints>
                     </view>
-                    <connections>
-                        <outlet property="avatarImageView" destination="NPB-L7-DjA" id="rvv-X4-yR6"/>
-                        <outlet property="descriptionLabel" destination="Epw-iJ-k7f" id="ZYL-k9-QqC"/>
-                        <outlet property="logOutButton" destination="zFc-NK-qMY" id="16v-l3-xei"/>
-                        <outlet property="loginLabel" destination="yFU-K0-7s9" id="b81-pB-hR2"/>
-                        <outlet property="nameLabel" destination="6l9-w6-suO" id="c2S-9L-nyP"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HS7-cO-BlT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
