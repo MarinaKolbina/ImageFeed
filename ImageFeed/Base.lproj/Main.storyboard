@@ -223,6 +223,14 @@
                                     <action selector="didTapBackButton:" destination="F9N-dm-jl8" eventType="touchUpInside" id="601-CI-4Dc"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6sw-dY-qDB" userLabel="Sharing button">
+                                <rect key="frame" x="171" y="717" width="51" height="50"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="button_sharing"/>
+                                <connections>
+                                    <action selector="didTapShareButton:" destination="F9N-dm-jl8" eventType="touchUpInside" id="Pv0-HS-gZg"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="lb1-jf-I7I"/>
                         <color key="backgroundColor" name="YP Black"/>
@@ -231,12 +239,15 @@
                             <constraint firstItem="Yzk-MS-tLL" firstAttribute="leading" secondItem="lb1-jf-I7I" secondAttribute="leading" id="Jx0-0N-h2s"/>
                             <constraint firstItem="YXB-WF-vaE" firstAttribute="top" secondItem="lb1-jf-I7I" secondAttribute="top" constant="8" id="NxN-l7-XiF"/>
                             <constraint firstAttribute="bottom" secondItem="Yzk-MS-tLL" secondAttribute="bottom" id="Pr0-2M-67t"/>
+                            <constraint firstItem="6sw-dY-qDB" firstAttribute="centerX" secondItem="lb1-jf-I7I" secondAttribute="centerX" id="X98-WK-PeJ"/>
                             <constraint firstItem="YXB-WF-vaE" firstAttribute="leading" secondItem="lb1-jf-I7I" secondAttribute="leading" constant="8" id="dds-5f-641"/>
+                            <constraint firstItem="lb1-jf-I7I" firstAttribute="bottom" secondItem="6sw-dY-qDB" secondAttribute="bottom" constant="51" id="hFm-Qk-ZdP"/>
                             <constraint firstItem="Yzk-MS-tLL" firstAttribute="top" secondItem="b5c-nV-q59" secondAttribute="top" id="mgi-PC-QHK"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="w8Y-II-HWE"/>
                     <connections>
+                        <outlet property="ShareButton" destination="6sw-dY-qDB" id="Fbc-0B-rR6"/>
                         <outlet property="imageView" destination="Q70-QP-wSg" id="O9D-e1-Ipn"/>
                         <outlet property="scrollView" destination="Yzk-MS-tLL" id="x1o-Cn-6Py"/>
                     </connections>
@@ -249,6 +260,7 @@
     <resources>
         <image name="0" width="200" height="132"/>
         <image name="backward" width="24" height="24"/>
+        <image name="button_sharing" width="51" height="50"/>
         <image name="like_button_on" width="29.333333969116211" height="26"/>
         <image name="logout_button" width="20" height="22"/>
         <image name="tab_editorial_active" width="30" height="30"/>
