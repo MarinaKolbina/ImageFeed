@@ -8,7 +8,7 @@
 import UIKit
 import WebKit
 
-fileprivate let UnsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+//fileprivate let UnsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
 
 protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
@@ -21,30 +21,32 @@ final class WebViewViewController: UIViewController {
     @IBOutlet weak var progressView: UIProgressView!
     
     weak var delegate: WebViewViewControllerDelegate?
+    
+    @IBAction private func didTapBackButton(_ sender: Any?) {
+        delegate?.webViewViewControllerDidCancel(self)
+    }
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-
         webView.navigationDelegate = self
-
-        var urlComponents = URLComponents(string: UnsplashAuthorizeURLString)!
+        
+        let oauthLink = getOauthLink()
+        let request = URLRequest(url: oauthLink)
+        
+        webView.load(request)
+        updateProgress()
+    }
+    
+    func getOauthLink() -> URL {
+        var urlComponents = URLComponents(string: AuthorizeURL)!
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: AccessKey),
             URLQueryItem(name: "redirect_uri", value: RedirectURI),
             URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: AccessScope)
+            URLQueryItem(name: "scopes", value: AccessScope)
         ]
-        let url = urlComponents.url!
-
-        let request = URLRequest(url: url)
-        webView.load(request)
-
-        updateProgress()
-    }
-
-    @IBAction private func didTapBackButton(_ sender: Any?) {
-        delegate?.webViewViewControllerDidCancel(self)
-    }
+        return urlComponents.url!
+        }
+    
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -62,11 +64,19 @@ final class WebViewViewController: UIViewController {
         webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey : Any]?,
+        context: UnsafeMutableRawPointer?)
+    {
         if keyPath == #keyPath(WKWebView.estimatedProgress) {
             updateProgress()
         } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath,
+                               of: object,
+                               change: change,
+                               context: context)
         }
     }
 
