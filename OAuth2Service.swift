@@ -57,3 +57,45 @@ final class OAuth2Service {
             }
         }
 }
+
+//final class OAuth2Service {
+//    private let urlSession = URLSession.shared              // 1
+//
+//    private var task: URLSessionTask?                       // 2
+//    private var lastCode: String?                           // 3
+//
+//    func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
+//        assert(Thread.isMainThread)                         // 4
+//        if task != nil {                                    // 5
+//            if lastCode != code {                           // 6
+//                task?.cancel()                              // 7
+//            } else {
+//                return                                      // 8
+//            }
+//        } else {
+//            if lastCode == code {                           // 9
+//                return
+//            }
+//        }
+//        lastCode = code                                     // 10
+//        let request = makeRequest(code: code)               // 11
+//        let task = urlSession.dataTask(with: request) { data, response, error in
+//            DispatchQueue.main.async {                      // 12
+//                completion(.success("")) // TODO [Sprint 10]// 13
+//                self.task = nil                             // 14
+//                if error != nil {                           // 15
+//                    self.lastCode = nil                     // 16
+//                }
+//            }
+//        }
+//        self.task = task                                    // 17
+//        task.resume()                                       // 18
+//    }
+//
+//    private func makeRequest(code: String) -> URLRequest {  // 19
+//        guard let url = URL(string: "...\(code)") else { fatalError("Failed to create URL") }
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "POST"
+//        return request
+//    }
+//}
