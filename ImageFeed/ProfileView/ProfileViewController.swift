@@ -10,6 +10,9 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
+    private var oAuth2TokenStorage: OAuth2TokenStorageProtocol = OAuth2TokenStorage()
+    private var profileService: ProfileService = ProfileService()
+
     override func viewDidLoad() {
         let profileImage = UIImage(named: "userpick")
         let imageView = UIImageView(image: profileImage)
@@ -59,6 +62,8 @@ class ProfileViewController: UIViewController {
         view.addSubview(button)
         button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26).isActive = true
         button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true
+        
+        profileService.fetchProfile(token: "", completion: <#T##(Result<Profile, Error>) -> Void#>)
     }
     
     @objc
