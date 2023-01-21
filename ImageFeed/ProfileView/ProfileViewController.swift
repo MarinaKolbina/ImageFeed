@@ -7,11 +7,14 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 class ProfileViewController: UIViewController {
     
     private var oAuth2TokenStorage: OAuth2TokenStorageProtocol = OAuth2TokenStorage()
-    private var profileService: ProfileService = ProfileService()
+    private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?      // 1
+
 
     override func viewDidLoad() {
         let profileImage = UIImage(named: "userpick")
@@ -41,7 +44,7 @@ class ProfileViewController: UIViewController {
         view.addSubview(label2)
         label2.leadingAnchor.constraint(equalTo: imageView.leadingAnchor).isActive = true
         label2.topAnchor.constraint(equalTo: label1.bottomAnchor, constant: 8).isActive = true
-
+        
         let label3 = UILabel()
         label3.text = "Hello, world!"
         label3.font = UIFont(name:"HelveticaNeue", size: 13.0)
@@ -63,7 +66,47 @@ class ProfileViewController: UIViewController {
         button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26).isActive = true
         button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true
         
-        profileService.fetchProfile(token: "", completion: <#T##(Result<Profile, Error>) -> Void#>)
+        profileService.fetchProfile(oAuth2TokenStorage.token!) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(profile):
+                label1.text = profile.username
+                label2.text = profile.username
+                label3.text = profile.bio
+            case let .failure(error):
+                // TODO [Sprint 11] Показать ошибку
+                break
+            }
+            
+        }
+        
+        super.viewDidLoad()
+        
+        profileImageServiceObserver = NotificationCenter.default    // 2
+            .addObserver(
+                forName: ProfileImageService.DidChangeNotification, // 3
+                object: nil,                                        // 4
+                queue: .main                                        // 5
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                updateAvatar()                                 // 6
+            }
+        updateAvatar()
+        
+        
+        
+        func updateAvatar() {                                   // 8
+            guard
+                let profileImageURL = ProfileImageService.shared.avatarURL,
+                let url = URL(string: profileImageURL)
+            else { return }
+            imageView.kf.setImage(with: url,
+                                  placeholder: UIImage(named: "userpick"),
+                                  options: [.transition(.fade(1)),
+                                            .cacheOriginalImage
+                                            ])
+                                            }
+    
     }
     
     @objc

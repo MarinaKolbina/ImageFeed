@@ -23,15 +23,25 @@ final class WebViewViewController: UIViewController {
     @IBAction private func didTapBackButton(_ sender: Any?) {
         delegate?.webViewViewControllerDidCancel(self)
     }
-
+    private var estimatedProgressObservation: NSKeyValueObservation?
+    
     override func viewDidLoad() {
-        webView.navigationDelegate = self
+//        webView.navigationDelegate = self
+//
+//        let oauthLink = getOauthLink()
+//        let request = URLRequest(url: oauthLink)
+//
+//        webView.load(request)
+//        updateProgress()
+        super.viewDidLoad()
         
-        let oauthLink = getOauthLink()
-        let request = URLRequest(url: oauthLink)
-        
-        webView.load(request)
-        updateProgress()
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self = self else { return }
+                 self.updateProgress()
+            })
     }
     
     func getOauthLink() -> URL {
@@ -112,3 +122,4 @@ extension WebViewViewController: WKNavigationDelegate {
         }
     }
 }
+
