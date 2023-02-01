@@ -36,12 +36,12 @@ final class SplashViewController: UIViewController {
     }
     
     private func showNextFlow(token: String?) {
-            if let token = token {
-                switchToTabBarController()
-            } else {
-                // Show Auth Screen
-                performSegue(withIdentifier: ShowAuthenticationScreenSegueIdentifier, sender: nil)
-            }
+        if let token = token {
+            switchToTabBarController()
+        } else {
+            // Show Auth Screen
+            performSegue(withIdentifier: ShowAuthenticationScreenSegueIdentifier, sender: nil)
+        }
     }
 }
 
