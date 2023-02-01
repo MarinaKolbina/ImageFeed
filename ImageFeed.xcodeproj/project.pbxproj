@@ -26,7 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B33E393B296B444F00B40EAC /* OAuth2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2Service.swift; sourceTree = SOURCE_ROOT; };
+		B33E393B296B444F00B40EAC /* OAuth2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OAuth2Service.swift; path = ImageFeed/Auth/OAuth2Service.swift; sourceTree = SOURCE_ROOT; };
 		B33E393D296B4AC000B40EAC /* OAuth2TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2TokenStorage.swift; sourceTree = "<group>"; };
 		B33E393F296B4B6000B40EAC /* OAuthTokenResponseBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenResponseBody.swift; sourceTree = "<group>"; };
 		B33E3941296C681800B40EAC /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SplashViewController.swift; path = ImageFeed/Splash/SplashViewController.swift; sourceTree = SOURCE_ROOT; };
