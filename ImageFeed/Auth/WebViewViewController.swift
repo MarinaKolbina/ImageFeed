@@ -37,12 +37,12 @@ final class WebViewViewController: UIViewController {
     }
     
     func getOauthLink() -> URL {
-        var urlComponents = URLComponents(string: AuthorizeURL)!
+        var urlComponents = URLComponents(string: Constants.authorizeURL)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: AccessKey),
-            URLQueryItem(name: "redirect_uri", value: RedirectURI),
+            URLQueryItem(name: "client_id", value: Constants.accessKey),
+            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
             URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scopes", value: AccessScope)
+            URLQueryItem(name: "scopes", value: Constants.accessScope)
         ]
         return urlComponents.url!
         }
