@@ -40,7 +40,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 case .success(let token):
                     self.oAuth2TokenStorage.token = token
                     self.delegate?.authViewController(self, true)
-                    self.webViewViewControllerDidCancel(vc)
+                    vc.dismiss(animated: true)
                 case .failure(let error):
                     print(error)
                 }
