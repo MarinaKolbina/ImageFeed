@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 class ProfileViewController: UIViewController {
     
@@ -20,6 +21,9 @@ class ProfileViewController: UIViewController {
         target: self,
         action: #selector(Self.didTapButton)
     )
+    private var oAuth2TokenStorage: OAuth2TokenStorageProtocol = OAuth2TokenStorage()
+    private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?      // 1
     
     
     override func viewDidLoad() {
@@ -63,6 +67,45 @@ class ProfileViewController: UIViewController {
         view.addSubview(logOutButton)
         logOutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26).isActive = true
         logOutButton.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true
+        
+        profileService.fetchProfile(oAuth2TokenStorage.token!) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(profile):
+                self.nameSurname.text = profile.username
+                self.username.text = profile.username
+                self.profileDescription.text = profile.bio
+            case let .failure(error):
+                // TODO [Sprint 11] Показать ошибку
+                break
+            }
+            
+        }
+        
+        profileImageServiceObserver = NotificationCenter.default    // 2
+            .addObserver(
+                forName: ProfileImageService.DidChangeNotification, // 3
+                object: nil,                                        // 4
+                queue: .main                                        // 5
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                updateAvatar()                                 // 6
+            }
+        updateAvatar()
+        
+        
+        
+        func updateAvatar() {                                   // 8
+            guard
+                let profileImageURL = ProfileImageService.shared.avatarURL,
+                let url = URL(string: profileImageURL)
+            else { return }
+            imageView.kf.setImage(with: url,
+                                  placeholder: UIImage(named: "userpick"),
+                                  options: [.transition(.fade(1)),
+                                            .cacheOriginalImage
+                                  ])
+        }
     }
     
     @objc

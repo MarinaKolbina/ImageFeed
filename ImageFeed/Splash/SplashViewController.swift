@@ -5,6 +5,7 @@
 //  Created by Marina Kolbina on 09/01/2023.
 //
 
+import Foundation
 import UIKit
 
 final class SplashViewController: UIViewController {
@@ -12,6 +13,15 @@ final class SplashViewController: UIViewController {
     
     private let oauth2Service = OAuth2Service()
     private let oauth2TokenStorage = OAuth2TokenStorage()
+    private let profileService = ProfileService.shared
+    private var alertPresenter: AlertPresenter?
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        alertPresenter = AlertPresenter(viewController: self)
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -64,9 +74,55 @@ extension SplashViewController: AuthViewControllerDelegate {
         if didAuthenticate {
             switchToTabBarController()
             vc.dismiss(animated: true)
+            UIBlockingProgressHUD.show()
         } else {
             // TODO [Sprint 11]
             print("error")
         }
     }
+    
+    private func fetchOAuthToken(_ code: String) {
+        
+        oauth2Service.fetchOAuthToken(code) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let token):
+                self.fetchProfile(token: token)
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
+                
+                let alertModel = AlertModel(
+                    title: "Что-то пошло не так(",
+                    message: "Не удалось войти в систему",
+                    buttonText: "Ок")
+                self.alertPresenter?.presentAlert(model: alertModel)
+                
+                break
+            }
+        }
+    }
+    
+    private func fetchProfile(token: String) {
+        profileService.fetchProfile(token) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(profileResult):
+                ProfileImageService.shared.fetchProfileImageURL(username: profileResult.username) { _ in }
+                self.profileService.updateProfileDetails(profile: profileResult)
+                UIBlockingProgressHUD.dismiss()
+                self.switchToTabBarController()
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
+                
+                let alertModel = AlertModel(
+                    title: "Что-то пошло не так(",
+                    message: "Не удалось войти в систему",
+                    buttonText: "Ок")
+                self.alertPresenter?.presentAlert(model: alertModel)
+                
+                break
+            }
+        }
+    }
+    
 }

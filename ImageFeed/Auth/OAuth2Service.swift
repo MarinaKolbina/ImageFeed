@@ -8,15 +8,32 @@
 import Foundation
 
 final class OAuth2Service {
+    private let urlSession = URLSession.shared              // 1
     
-    private enum NetworkError: Error {
-        case codeError
+    private var task: URLSessionTask?                       // 2
+    private var lastCode: String?                           // 3
+    
+    func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let session = URLSession.shared
+        let request = makeRequest(code: code)
+        guard let request = request else { return }
+
+        let task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let tokenBody):
+                completion(.success(tokenBody.accessToken))
+            case .failure(let error):
+                completion(.failure(error))
+                UIBlockingProgressHUD.dismiss()
+                break
+            }
+        }
+        task.resume()
     }
     
-    private let jsonDecoder = JSONDecoder()
-    
-    func fetchOAuthToken(_ code: String, handler: @escaping (Result<String, Error>) -> Void) {
-        if var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token") {
+    private func makeRequest(code: String) -> URLRequest? {
+        if var urlComponents = URLComponents(string: Constants.tokenURL) {
             urlComponents.queryItems = [
                 URLQueryItem(name: "client_id", value: Constants.accessKey),
                 URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
@@ -26,31 +43,8 @@ final class OAuth2Service {
             ]
             var request = URLRequest(url: urlComponents.url!)
             request.httpMethod = "POST"
-            
-            let task = URLSession.shared.dataTask(with: request) { [weak self]  data, response, error in
-                guard let self = self else { return }
-                
-                if let error = error {
-                    handler(.failure(error))
-                    return
-                }
-                
-                if let response = response as? HTTPURLResponse,
-                   response.statusCode < 200 || response.statusCode >= 300 {
-                    handler(.failure(NetworkError.codeError))
-                    return
-                }
-                
-                if let data = data {
-                    do {
-                        let response = try self.jsonDecoder.decode(OAuthTokenResponseBody.self, from: data)
-                        handler(.success(response.accessToken))
-                    } catch let error {
-                        handler(.failure(error))
-                    }
-                }
-            }
-            task.resume()
+            return request
         }
+        return nil
     }
 }
