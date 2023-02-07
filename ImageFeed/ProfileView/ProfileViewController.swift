@@ -10,9 +10,21 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
+    private let imageView = UIImageView(image: UIImage(named: "userpick"))
+    private let nameSurname = UILabel()
+    private let username = UILabel()
+    private let profileDescription = UILabel()
+    
+    private let logOutButton = UIButton.systemButton(
+        with: UIImage(named: "logout_button")!,
+        target: self,
+        action: #selector(Self.didTapButton)
+    )
+    
+    
     override func viewDidLoad() {
-        let profileImage = UIImage(named: "userpick")
-        let imageView = UIImageView(image: profileImage)
+        super.viewDidLoad()
+        
         imageView.tintColor = .gray
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
@@ -21,44 +33,36 @@ class ProfileViewController: UIViewController {
         imageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
         
-        let label1 = UILabel()
-        label1.text = "Екатерина Новикова"
-        label1.font = UIFont(name:"HelveticaNeue-Bold", size: 23.0)
-        label1.textColor = UIColor(named: "YP White")
-        label1.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label1)
-        label1.leadingAnchor.constraint(equalTo: imageView.leadingAnchor).isActive = true
-        label1.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8).isActive = true
-        
-        let label2 = UILabel()
-        label2.text = "@ekaterina_nov"
-        label2.font = UIFont(name:"HelveticaNeue", size: 13.0)
-        label2.textColor = UIColor(named: "YP Grey")
-        label2.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label2)
-        label2.leadingAnchor.constraint(equalTo: imageView.leadingAnchor).isActive = true
-        label2.topAnchor.constraint(equalTo: label1.bottomAnchor, constant: 8).isActive = true
-
-        let label3 = UILabel()
-        label3.text = "Hello, world!"
-        label3.font = UIFont(name:"HelveticaNeue", size: 13.0)
-        label3.textColor = UIColor(named: "YP White")
-        label3.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label3)
-        label3.leadingAnchor.constraint(equalTo: imageView.leadingAnchor).isActive = true
-        label3.topAnchor.constraint(equalTo: label2.bottomAnchor, constant: 8).isActive = true
+        nameSurname.text = "Екатерина Новикова"
+        nameSurname.font = UIFont(name:"HelveticaNeue-Bold", size: 23.0)
+        nameSurname.textColor = UIColor(named: "YP White")
+        nameSurname.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(nameSurname)
+        nameSurname.leadingAnchor.constraint(equalTo: imageView.leadingAnchor).isActive = true
+        nameSurname.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8).isActive = true
         
         
-        let button = UIButton.systemButton(
-            with: UIImage(named: "logout_button")!,
-            target: self,
-            action: #selector(Self.didTapButton)
-        )
-        button.tintColor = .red
-        button.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(button)
-        button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26).isActive = true
-        button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true
+        username.text = "@ekaterina_nov"
+        username.font = UIFont(name:"HelveticaNeue", size: 13.0)
+        username.textColor = UIColor(named: "YP Grey")
+        username.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(username)
+        username.leadingAnchor.constraint(equalTo: imageView.leadingAnchor).isActive = true
+        username.topAnchor.constraint(equalTo: nameSurname.bottomAnchor, constant: 8).isActive = true
+        
+        profileDescription.text = "Hello, world!"
+        profileDescription.font = UIFont(name:"HelveticaNeue", size: 13.0)
+        profileDescription.textColor = UIColor(named: "YP White")
+        profileDescription.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(profileDescription)
+        profileDescription.leadingAnchor.constraint(equalTo: imageView.leadingAnchor).isActive = true
+        profileDescription.topAnchor.constraint(equalTo: username.bottomAnchor, constant: 8).isActive = true
+        
+        logOutButton.tintColor = .red
+        logOutButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(logOutButton)
+        logOutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26).isActive = true
+        logOutButton.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true
     }
     
     @objc
