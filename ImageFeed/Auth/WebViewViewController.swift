@@ -26,15 +26,15 @@ final class WebViewViewController: UIViewController {
     private var estimatedProgressObservation: NSKeyValueObservation?
     
     override func viewDidLoad() {
-        //        webView.navigationDelegate = self
-        //
-        //        let oauthLink = getOauthLink()
-        //        let request = URLRequest(url: oauthLink)
-        //
-        //        webView.load(request)
-        //        updateProgress()
         super.viewDidLoad()
-        
+
+        webView.navigationDelegate = self
+
+        let oauthLink = getOauthLink()
+        let request = URLRequest(url: oauthLink)
+
+        webView.load(request)
+
         estimatedProgressObservation = webView.observe(
             \.estimatedProgress,
              options: [],

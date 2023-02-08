@@ -44,6 +44,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 case .failure(let error):
                     print(error)
                 }
+                UIBlockingProgressHUD.dismiss()
             }
         }
     }

@@ -16,11 +16,11 @@ final class UIBlockingProgressHUD {
     
     static func show() {
         window?.isUserInteractionEnabled = false
-        UIBlockingProgressHUD.show()
+        ProgressHUD.show()
     }
     
     static func dismiss() {
         window?.isUserInteractionEnabled = true
-        UIBlockingProgressHUD.dismiss()
+        ProgressHUD.dismiss()
     }
 }
