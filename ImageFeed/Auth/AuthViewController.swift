@@ -9,7 +9,8 @@ import Foundation
 import WebKit
 
 protocol AuthViewControllerDelegate: AnyObject {
-    func authViewController(_ vc: AuthViewController, _ didAuthenticate: Bool)
+//    func authViewController(_ vc: AuthViewController, _ didAuthenticate: Bool)
+    func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String)
 }
 
 final class AuthViewController: UIViewController {
@@ -39,7 +40,8 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 switch result {
                 case .success(let token):
                     self.oAuth2TokenStorage.token = token
-                    self.delegate?.authViewController(self, true)
+//                    self.delegate?.authViewController(self, true)
+                    self.delegate?.authViewController(self, didAuthenticateWithCode: code)
                     vc.dismiss(animated: true)
                 case .failure(let error):
                     print(error)

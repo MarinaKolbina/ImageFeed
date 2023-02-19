@@ -8,32 +8,65 @@
 import Foundation
 
 struct ProfileResult: Codable {
-    var id: String
-    var updated_at: String
+//    var id: String
+//    var name: String
+//    var updated_at: String
     var username: String
     var first_name: String
     var last_name: String
-    var twitter_username: String
-    var portfolio_url: String?
+//    var twitter_username: String
+//    var portfolio_url: String?
     var bio: String
-    var total_likes: Int
-    var total_photos: Int
-    var total_collections: Int
-    var followed_by_user: Bool
-    var downloads: Int
-    var uploads_remaining: Int
-    var instagram_username: String
-    var location: String?
-    var email: String
-    var links: Links
+//    var total_likes: Int
+//    var total_photos: Int
+//    var total_collections: Int
+//    var followed_by_user: Bool
+//    var downloads: Int
+//    var uploads_remaining: Int
+//    var instagram_username: String
+//    var location: String?
+//    var email: String
+//    var links: Links
+//
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        first_name = try container.decode(String.self, forKey: .first_name)
+        last_name = try container.decode(String.self, forKey: .last_name)
+        bio = try container.decodeIfPresent(String.self, forKey: .bio) ?? ""
+        username = try container.decode(String.self, forKey: .username)
+    }
 }
+
+
+
+//struct Profile: Decodable {
+//    let username: String
+//    let name: String
+//    let bio: String
+//    var login: String {"@\(username)"}
+//
+//    enum CodingKeys: String, CodingKey {
+//        case username = "username"
+//        case name = "name"
+//        case bio = "bio"
+//    }
+//
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.name = try container.decode(String.self, forKey: .name)
+//
+//        bio = try container.decodeIfPresent(String.self, forKey: .bio) ?? ""
+//        username = try container.decode(String.self, forKey: .username)
+//    }
+//}
 
 struct Profile {
     var username: String
     var name: String
     var loginName: String
     var bio: String
-    
+
     init(username: String, first_name: String, last_name: String, bio: String) {
         self.username = username
         self.name = "\(first_name) \(last_name)"

@@ -70,19 +70,14 @@ extension SplashViewController {
 }
 
 extension SplashViewController: AuthViewControllerDelegate {
-    func authViewController(_ vc: AuthViewController, _ didAuthenticate: Bool) {
-        if didAuthenticate {
-            switchToTabBarController()
-            vc.dismiss(animated: true)
-            UIBlockingProgressHUD.show()
-        } else {
-            // TODO [Sprint 11]
-            print("error")
-        }
+    func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
+        self.switchToTabBarController()
+        UIBlockingProgressHUD.show()
+        vc.dismiss(animated: true)
+        self.fetchOAuthToken(code)
     }
     
     private func fetchOAuthToken(_ code: String) {
-        
         oauth2Service.fetchOAuthToken(code) { [weak self] result in
             guard let self = self else { return }
             switch result {

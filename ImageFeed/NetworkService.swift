@@ -26,12 +26,13 @@ extension URLSession {
                         fulfillCompletionOnMainThread(.failure(error))
                     }
                 } else {
-                    fulfillCompletionOnMainThread(.failure(error!)) //makeGenericError TODO
+//                    fulfillCompletionOnMainThread(.failure(error!))
+                    fulfillCompletionOnMainThread(.failure(NSError(domain:"", code: statusCode)))
                 }
             } else if let error = error {
                 fulfillCompletionOnMainThread(.failure(error))
             } else {
-                fulfillCompletionOnMainThread(.failure(error!)) //makeGenericError TODO
+                fulfillCompletionOnMainThread(.failure(NSError(domain:"", code: 0)))
             }
         })
         return task

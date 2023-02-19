@@ -14,16 +14,21 @@ final class OAuth2Service {
     private var lastCode: String?                           // 3
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        assert(Thread.isMainThread)
         let session = URLSession.shared
         let request = makeRequest(code: code)
         guard let request = request else { return }
-
+        
+        task?.cancel()
+        lastCode = code
         let task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             guard let self = self else { return }
+            self.task = nil
             switch result {
             case .success(let tokenBody):
                 completion(.success(tokenBody.accessToken))
             case .failure(let error):
+                self.lastCode = nil
                 completion(.failure(error))
                 UIBlockingProgressHUD.dismiss()
                 break
