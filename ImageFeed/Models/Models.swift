@@ -8,26 +8,11 @@
 import Foundation
 
 struct ProfileResult: Codable {
-//    var id: String
-//    var name: String
-//    var updated_at: String
     var username: String
     var first_name: String
     var last_name: String
-//    var twitter_username: String
-//    var portfolio_url: String?
     var bio: String
-//    var total_likes: Int
-//    var total_photos: Int
-//    var total_collections: Int
-//    var followed_by_user: Bool
-//    var downloads: Int
-//    var uploads_remaining: Int
-//    var instagram_username: String
-//    var location: String?
-//    var email: String
-//    var links: Links
-//
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
@@ -37,29 +22,6 @@ struct ProfileResult: Codable {
         username = try container.decode(String.self, forKey: .username)
     }
 }
-
-
-
-//struct Profile: Decodable {
-//    let username: String
-//    let name: String
-//    let bio: String
-//    var login: String {"@\(username)"}
-//
-//    enum CodingKeys: String, CodingKey {
-//        case username = "username"
-//        case name = "name"
-//        case bio = "bio"
-//    }
-//
-//    init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        self.name = try container.decode(String.self, forKey: .name)
-//
-//        bio = try container.decodeIfPresent(String.self, forKey: .bio) ?? ""
-//        username = try container.decode(String.self, forKey: .username)
-//    }
-//}
 
 struct Profile {
     var username: String
@@ -150,3 +112,83 @@ struct AlertModel {
     let message: String
     let buttonText: String
 }
+
+//struct PhotoResult: Decodable  { //пачиму такие поля в структуре, как это понять??
+//    let id: String
+//    let createdAt: String
+//    let width: Int
+//    let height: Int
+//    let isLiked: Bool
+//    let description: String?
+//    let urls: UrlsResult
+//
+//    struct UrlsResult: Decodable {
+//        let full: URL
+//        let small: URL
+//        let thumb: URL
+//    }
+//
+//    enum CodingKeys: String, CodingKey { //че за кодинк кис вообще, зачем они нужны
+//        case id, width, height, description, urls
+//        case isLiked = "liked_by_user"
+//        case createdAt = "created_at"
+//    }
+//}
+
+struct PhotoResult: Codable {
+    let id: String
+    let createdAt: Date?
+    let width: Int
+    let height: Int
+    let isLiked: Bool
+    let description: String?
+    let urls: UrlsResult
+    
+    enum UrlsKeys: String, CodingKey {
+        case full, small, thumb
+    }
+    
+    struct UrlsResult: Codable {
+        let full: String
+        let small: String
+        let thumb: String
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        let urlsContainer = try decoder.container(keyedBy: UrlsKeys.self)
+        
+        id = try container.decode(String.self, forKey: .id)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        height = try container.decode(Int.self, forKey: .height)
+        width = try container.decode(Int.self, forKey: .width)
+        isLiked = try container.decode(Bool.self, forKey: .isLiked)
+        description = try container.decode(String.self, forKey: .description)
+        
+        urls = try container.decode(UrlsResult.self, forKey: .urls)
+    }
+    
+}
+
+struct Photo: Decodable {
+    let id: String
+    let size: CGSize
+    let createdAt: Date?
+    let welcomeDescription: String?
+    let thumbImageURL: String
+    let largeImageURL: String
+    let isLiked: Bool
+    
+    init(id: String, height: Int, width: Int, createdAt: Date?, welcomeDescription: String?, thumbImageURL: String, largeImageURL: String, isLiked: Bool) {
+        self.id = id
+        self.size = CGSize(width: width, height: height)
+        self.createdAt = createdAt
+        self.welcomeDescription = welcomeDescription
+        self.thumbImageURL = thumbImageURL
+        self.largeImageURL = largeImageURL
+        self.isLiked = isLiked
+    }
+    
+}
+    
+

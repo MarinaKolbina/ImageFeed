@@ -31,6 +31,10 @@ class ImagesListViewController: UIViewController {
         }
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        Метод tableView(_:, willDisplay:, forRowAt:) вызывается прямо перед тем, как ячейка таблицы будет показана на экране. В этом методе можно проверить условие indexPath.row + 1 == photos.count, и если оно верно — вызывать fetchPhotosNextPage(). Вызывать функцию fetchPhotosNextPage() мы будем из этого метода
+    }
+    
 }
 
 extension ImagesListViewController: UITableViewDataSource {
