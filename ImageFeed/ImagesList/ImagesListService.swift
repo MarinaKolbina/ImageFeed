@@ -12,7 +12,7 @@ final class ImagesListService {
     private var task: URLSessionTask?
     private var lastLoadedPage: Int?
     static let DidChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
-    //    static let shared = ImageListService()
+    static let shared = ImagesListService()
     
     func fetchPhotosNextPage(_ token: String) {
         let session = URLSession.shared
@@ -24,7 +24,7 @@ final class ImagesListService {
         let request = makeRequest(token: token, page: nextPage)
         guard let request = request else { return }
         if task == nil {
-            task = session.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
+            let task = session.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
                 guard let self = self else { return }
                 switch result {
                 case .success(let photoResults):

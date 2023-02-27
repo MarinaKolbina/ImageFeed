@@ -4,10 +4,10 @@
 //
 //  Created by Marina Kolbina on 19/01/2023.
 //
-
 import Foundation
 extension URLSession {
     func objectTask<T: Decodable>(for request: URLRequest, completion: @escaping (Result<T, Error>) -> Void) -> URLSessionTask {
+        print("inside ot")
         
         let fulfillCompletionOnMainThread: (Result<T, Error>) -> Void = { result in
             DispatchQueue.main.async {
@@ -16,6 +16,9 @@ extension URLSession {
         }
         
         let task = dataTask(with: request, completionHandler: { data, response, error in
+            print("super inside pt")
+            
+            
             if let data = data, let response = response, let statusCode = (response as? HTTPURLResponse)?.statusCode {
                 if 200 ..< 300 ~= statusCode {
                     do {

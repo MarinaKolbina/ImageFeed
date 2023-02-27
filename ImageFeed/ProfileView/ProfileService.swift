@@ -24,7 +24,7 @@ final class ProfileService {
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         let session = URLSession.shared
         let request = makeRequest(token: token)
-        
+        print("start object task")
         let task = session.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             guard let self = self else { return }
             switch result {
