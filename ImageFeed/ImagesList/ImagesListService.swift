@@ -35,6 +35,7 @@ final class ImagesListService {
                     break
                 }
             }
+            task.resume()
         }
         
         else {
@@ -66,6 +67,50 @@ final class ImagesListService {
         }
     }
     
+    func changeLike(token: String, photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        let session = URLSession.shared
+        let request = makeRequest(token: token, photoId: photoId, isLike: isLike)
+        guard let request = request else { return }
+        if task == nil {
+            let task = session.objectTask(for: request) { [weak self] (result: Result<LikePhotoResult, Error>) in
+                guard let self = self else { return }
+                switch result {
+                case .success(let likePhotoResults):
+                    self.updatePhotoInfo(photoId: photoId)
+                    print("changed like on \(likePhotoResults.photo.id)")
+                case .failure(let error):
+                    print(error)
+                }
+            }
+            task.resume()
+        }
+
+        else {
+            return
+        }
+    }
+//
+    func updatePhotoInfo(photoId: String) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                let photo = self.photos[index]
+                
+                let newPhoto = Photo(
+                    id: photo.id,
+                    height: Int(photo.size.height),
+                    width: Int(photo.size.width),
+                    createdAt: ISO8601DateFormatter().string(from: photo.createdAt ?? Date()),
+                    welcomeDescription: photo.welcomeDescription,
+                    thumbImageURL: photo.thumbImageURL,
+                    largeImageURL: photo.largeImageURL,
+                    isLiked: !photo.isLiked
+                )
+                self.photos[index] = newPhoto
+            }
+        }
+    }
     
     private func makeRequest(token: String, page: Int, per_page: Int = 10) -> URLRequest? {
         if var urlComponents = URLComponents(string: "\(Constants.baseURL)/photos") {
@@ -76,6 +121,26 @@ final class ImagesListService {
             var request = URLRequest(url: urlComponents.url!)
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.httpMethod = "GET"
+            return request
+        }
+        return nil
+    }
+    
+    
+    
+    private func makeRequest(token: String, photoId: String, isLike: Bool) -> URLRequest? {
+        if var urlComponents = URLComponents(string: "\(Constants.baseURL)/photos/\(photoId)/like") {
+            urlComponents.queryItems = [
+                URLQueryItem(name: "id", value: photoId)
+            ]
+            var request = URLRequest(url: urlComponents.url!)
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            if isLike {
+                request.httpMethod = "DELETE"
+            }
+            else {
+                request.httpMethod = "POST"
+            }
             return request
         }
         return nil
