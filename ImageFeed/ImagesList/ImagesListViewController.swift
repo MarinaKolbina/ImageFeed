@@ -1,15 +1,21 @@
 import UIKit
+import Kingfisher
 
 class ImagesListViewController: UIViewController {
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
+    private let imagesListService = ImagesListService()
+    private var imageListServiceObserver: NSObjectProtocol?
+    private let oauth2TokenStorage = OAuth2TokenStorage()
+    private var photosName = [String]()
+    private var photos: [Photo] = []
     
     @IBOutlet private var tableView: UITableView!
     
-    private var photosName = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        observeImagesLoad()
+        imagesListService.fetchPhotosNextPage(oauth2TokenStorage.token!)
         photosName = Array(0..<20).map{ "\($0)" }
     }
     
@@ -31,39 +37,84 @@ class ImagesListViewController: UIViewController {
         }
     }
     
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        Метод tableView(_:, willDisplay:, forRowAt:) вызывается прямо перед тем, как ячейка таблицы будет показана на экране. В этом методе можно проверить условие indexPath.row + 1 == photos.count, и если оно верно — вызывать fetchPhotosNextPage(). Вызывать функцию fetchPhotosNextPage() мы будем из этого метода
+        if indexPath.row + 1 == photos.count {
+            imagesListService.fetchPhotosNextPage(oauth2TokenStorage.token!)
+        }
     }
     
+    private func updateTableViewAnimated() {
+        let oldCount = photos.count
+        let newCount = imagesListService.photos.count
+        photos = imagesListService.photos
+        if oldCount != newCount {
+            tableView.performBatchUpdates {
+                let indexPaths = (oldCount..<newCount).map { i in
+                    IndexPath(row: i, section: 0)
+                }
+                tableView.insertRows(at: indexPaths, with: .automatic)
+            } completion: { _ in }
+        }
+    }
+    
+    private func observeImagesLoad() {
+        imageListServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ImagesListService.DidChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateTableViewAnimated()
+            }
+        
+    }
 }
 
 extension ImagesListViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photosName.count
+        return photos.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
-
+        
         guard let imageListCell = cell as? ImagesListCell else {
-            return UITableViewCell()
+            return UITableViewCell(style: .default, reuseIdentifier: "cell")
         }
-
+        
         configCell(for: imageListCell, with: indexPath)
-
-        return imageListCell
+        
+        imageListCell.cellImage.kf.indicatorType = .activity
+        imageListCell.cellImage.kf.setImage(with: URL(string: photos[indexPath.row].thumbImageURL),
+                                            placeholder: UIImage(named: "mockImagesForTable/0"),
+                                            options: [.transition(.fade(1)),
+                                                      .cacheOriginalImage
+                                            ]) { result in
+            switch result {
+            case .success(_):
+                tableView.reloadRows(at: [indexPath], with: .automatic)
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+        return cell
     }
 }
 
+
 extension ImagesListViewController {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        guard let image = UIImage(named: photosName[indexPath.row]) else {
+        guard let image = UIImage(named: photosName[indexPath.row % photosName.count]) else {
             return
         }
-
+        
         cell.cellImage.image = image
         cell.dateLabel.text = dateFormatter.string(from: Date())
-
+        
         let isLiked = indexPath.row % 2 == 0
         let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
         cell.likeButton.setImage(likeImage, for: .normal)

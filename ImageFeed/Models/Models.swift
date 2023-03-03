@@ -113,34 +113,12 @@ struct AlertModel {
     let buttonText: String
 }
 
-//struct PhotoResult: Decodable  { //пачиму такие поля в структуре, как это понять??
-//    let id: String
-//    let createdAt: String
-//    let width: Int
-//    let height: Int
-//    let isLiked: Bool
-//    let description: String?
-//    let urls: UrlsResult
-//
-//    struct UrlsResult: Decodable {
-//        let full: URL
-//        let small: URL
-//        let thumb: URL
-//    }
-//
-//    enum CodingKeys: String, CodingKey { //че за кодинк кис вообще, зачем они нужны
-//        case id, width, height, description, urls
-//        case isLiked = "liked_by_user"
-//        case createdAt = "created_at"
-//    }
-//}
-
 struct PhotoResult: Codable {
     let id: String
-    let createdAt: Date?
+    let createdAt: String
     let width: Int
     let height: Int
-    let isLiked: Bool
+    var isLiked: Bool
     let description: String?
     let urls: UrlsResult
     
@@ -154,20 +132,28 @@ struct PhotoResult: Codable {
         let thumb: String
     }
     
+    enum CodingKeys: String, CodingKey {
+        case id, width, height, description, urls
+        case isLiked = "liked_by_user"
+        case createdAt = "created_at"
+    }
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-//        let urlsContainer = try decoder.container(keyedBy: UrlsKeys.self)
         
         id = try container.decode(String.self, forKey: .id)
-        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        createdAt = try container.decode(String.self, forKey: .createdAt)
         height = try container.decode(Int.self, forKey: .height)
         width = try container.decode(Int.self, forKey: .width)
         isLiked = try container.decode(Bool.self, forKey: .isLiked)
-        description = try container.decode(String.self, forKey: .description)
+        description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
         
         urls = try container.decode(UrlsResult.self, forKey: .urls)
     }
-    
+}
+
+struct LikePhotoResult: Decodable {
+    let photo: PhotoResult
 }
 
 struct Photo: Decodable {
@@ -177,18 +163,16 @@ struct Photo: Decodable {
     let welcomeDescription: String?
     let thumbImageURL: String
     let largeImageURL: String
-    let isLiked: Bool
+    var isLiked: Bool
     
-    init(id: String, height: Int, width: Int, createdAt: Date?, welcomeDescription: String?, thumbImageURL: String, largeImageURL: String, isLiked: Bool) {
+    init(id: String, height: Int, width: Int, createdAt: String, welcomeDescription: String?, thumbImageURL: String, largeImageURL: String, isLiked: Bool) {
+        let formatter = ISO8601DateFormatter()
         self.id = id
         self.size = CGSize(width: width, height: height)
-        self.createdAt = createdAt
+        self.createdAt = formatter.date(from: createdAt) ?? Date()
         self.welcomeDescription = welcomeDescription
         self.thumbImageURL = thumbImageURL
         self.largeImageURL = largeImageURL
         self.isLiked = isLiked
     }
-    
 }
-    
-
