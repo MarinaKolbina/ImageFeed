@@ -33,7 +33,6 @@
 		B3820A82292C066500CBB840 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3820A80292C066500CBB840 /* LaunchScreen.storyboard */; };
 		B3D2B9332964C2DC00BAE02F /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D2B9322964C2DC00BAE02F /* AuthViewController.swift */; };
 		B3D2B9362965E65B00BAE02F /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D2B9352965E65B00BAE02F /* WebViewViewController.swift */; };
-		B3F5639B29ABDF0100753100 /* ImageFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F5639A29ABDF0100753100 /* ImageFeedTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,7 +72,6 @@
 		B3D2B9322964C2DC00BAE02F /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		B3D2B9352965E65B00BAE02F /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
 		B3F5639829ABDF0100753100 /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B3F5639A29ABDF0100753100 /* ImageFeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFeedTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,7 +153,6 @@
 			isa = PBXGroup;
 			children = (
 				B3820A74292C066400CBB840 /* ImageFeed */,
-				B3F5639929ABDF0100753100 /* ImageFeedTests */,
 				B3820A73292C066400CBB840 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -200,14 +197,6 @@
 				B3D2B9352965E65B00BAE02F /* WebViewViewController.swift */,
 			);
 			path = Auth;
-			sourceTree = "<group>";
-		};
-		B3F5639929ABDF0100753100 /* ImageFeedTests */ = {
-			isa = PBXGroup;
-			children = (
-				B3F5639A29ABDF0100753100 /* ImageFeedTests.swift */,
-			);
-			path = ImageFeedTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -348,7 +337,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3F5639B29ABDF0100753100 /* ImageFeedTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
