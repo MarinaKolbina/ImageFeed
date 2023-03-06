@@ -84,7 +84,7 @@ extension ImagesListViewController: UITableViewDataSource {
         guard let imageListCell = cell as? ImagesListCell else {
             return UITableViewCell(style: .default, reuseIdentifier: "cell")
         }
-        
+        imageListCell.delegate = self
         configCell(for: imageListCell, with: indexPath)
         
         imageListCell.cellImage.kf.indicatorType = .activity
@@ -115,8 +115,8 @@ extension ImagesListViewController {
         cell.cellImage.image = image
         cell.dateLabel.text = dateFormatter.string(from: Date())
         
-        let isLiked = indexPath.row % 2 == 0
-        let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
+//        let isLiked = indexPath.row % 2 == 0
+        let likeImage = UIImage(named: "like_button_off")
         cell.likeButton.setImage(likeImage, for: .normal)
     }
 }
@@ -124,5 +124,25 @@ extension ImagesListViewController {
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "ShowSingleImage", sender: indexPath)
+    }
+}
+
+extension ImagesListViewController: ImagesListCellDelegate {
+    func imageListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+        UIBlockingProgressHUD.show()
+        imagesListService.changeLike(token: oauth2TokenStorage.token!, photoId: photo.id, isLike: !photo.isLiked) {
+            result in
+            switch result {
+            case .success:
+                self.photos = self.imagesListService.photos
+                cell.setIsLiked(isLiked: self.photos[indexPath.row].isLiked)
+            case .failure:
+                print("")
+                // TODO: Показать ошибку с использованием UIAlertController
+            }
+            UIBlockingProgressHUD.dismiss()
+        }
     }
 }

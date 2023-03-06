@@ -78,18 +78,19 @@ final class ImagesListService {
                 case .success(let likePhotoResults):
                     self.updatePhotoInfo(photoId: photoId)
                     print("changed like on \(likePhotoResults.photo.id)")
+                    completion(.success(Void()))
                 case .failure(let error):
                     print(error)
+                    completion(.failure(error))
                 }
             }
             task.resume()
         }
-
         else {
             return
         }
     }
-//
+
     func updatePhotoInfo(photoId: String) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
@@ -130,9 +131,6 @@ final class ImagesListService {
     
     private func makeRequest(token: String, photoId: String, isLike: Bool) -> URLRequest? {
         if var urlComponents = URLComponents(string: "\(Constants.baseURL)/photos/\(photoId)/like") {
-            urlComponents.queryItems = [
-                URLQueryItem(name: "id", value: photoId)
-            ]
             var request = URLRequest(url: urlComponents.url!)
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             if isLike {

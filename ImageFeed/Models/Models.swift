@@ -152,8 +152,14 @@ struct PhotoResult: Codable {
     }
 }
 
-struct LikePhotoResult: Decodable {
+struct LikePhotoResult: Codable {
     let photo: PhotoResult
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        photo = try container.decode(PhotoResult.self, forKey: .photo)
+    }
 }
 
 struct Photo: Decodable {
