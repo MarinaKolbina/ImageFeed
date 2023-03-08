@@ -89,26 +89,37 @@ class ProfileViewController: UIViewController {
                 queue: .main                                        // 5
             ) { [weak self] _ in
                 guard let self = self else { return }
-                updateAvatar()                                 // 6
+                self.updateAvatar()                                 // 6
             }
         updateAvatar()
-        
-        
-        
-        func updateAvatar() {                                   // 8
-            guard
-                let profileImageURL = ProfileImageService.shared.avatarURL,
-                let url = URL(string: profileImageURL)
-            else { return }
-            imageView.kf.setImage(with: url,
-                                  placeholder: UIImage(named: "userpick"),
-                                  options: [.transition(.fade(1)),
-                                            .cacheOriginalImage
-                                  ])
-        }
+    }
+    
+    func updateAvatar() {                                   // 8
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        imageView.kf.setImage(with: url,
+                              placeholder: UIImage(named: "userpick"),
+                              options: [.transition(.fade(1)),
+                                        .cacheOriginalImage
+                              ])
+    }
+    
+    func onLogout() {
+        OAuth2TokenStorage().clearToken()
+        print("2")
+        WebViewViewController.cleanCookies()
+        tabBarController?.dismiss(animated: true)
+        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+        window.rootViewController = SplashViewController()
+        print("3")
+        print(4)
     }
     
     @objc
     private func didTapButton() {
+        print("1")
+        onLogout()
     }
 }
