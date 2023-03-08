@@ -16,7 +16,14 @@ final class SplashViewController: UIViewController {
     private let profileService = ProfileService.shared
     private var alertPresenter: AlertPresenter?
     
-    
+    private let practicumLogoView: UIImageView = {
+            let imageView = UIImageView(image: UIImage(named: "practicumLogoView"))
+            imageView.tintColor = UIColor(named: "YP White")
+            imageView.contentMode = .scaleAspectFit
+
+            return imageView
+        }()
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -50,24 +57,33 @@ final class SplashViewController: UIViewController {
             switchToTabBarController()
         } else {
             // Show Auth Screen
-            performSegue(withIdentifier: ShowAuthenticationScreenSegueIdentifier, sender: nil)
+            // performSegue(withIdentifier: ShowAuthenticationScreenSegueIdentifier, sender: nil)
+            let storyboard = UIStoryboard(name: "Main", bundle: .main)
+            guard let authViewController = storyboard.instantiateViewController(
+                withIdentifier: "AuthViewController"
+            ) as? AuthViewController else {
+                return
+            }
+            authViewController.delegate = self
+            authViewController.modalPresentationStyle = .fullScreen
+            present(authViewController, animated: true)
         }
     }
 }
 
-extension SplashViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == ShowAuthenticationScreenSegueIdentifier {
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers[0] as? AuthViewController
-            else { fatalError("Failed to prepare for \(ShowAuthenticationScreenSegueIdentifier)") }
-            viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-}
+//extension SplashViewController {
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == ShowAuthenticationScreenSegueIdentifier {
+//            guard
+//                let navigationController = segue.destination as? UINavigationController,
+//                let viewController = navigationController.viewControllers[0] as? AuthViewController
+//            else { fatalError("Failed to prepare for \(ShowAuthenticationScreenSegueIdentifier)") }
+//            viewController.delegate = self
+//        } else {
+//            super.prepare(for: segue, sender: sender)
+//        }
+//    }
+//}
 
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
@@ -120,4 +136,24 @@ extension SplashViewController: AuthViewControllerDelegate {
         }
     }
     
+}
+
+extension SplashViewController {
+    private func configureViewComponents() {
+        view.backgroundColor = UIColor(named: "YP Black")
+        practicumLogoView.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(practicumLogoView)
+
+        NSLayoutConstraint.activate([
+            practicumLogoView.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor),
+            practicumLogoView.centerYAnchor.constraint(
+                equalTo: view.centerYAnchor),
+            practicumLogoView.widthAnchor.constraint(
+                equalTo: view.widthAnchor, multiplier: 0.2),
+            practicumLogoView.heightAnchor.constraint(
+                equalTo: practicumLogoView.widthAnchor)
+        ])
+    }
 }
