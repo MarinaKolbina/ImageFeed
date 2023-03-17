@@ -49,7 +49,7 @@ final class ProfileService {
     
     
     private func makeRequest(token: String) -> URLRequest {
-        guard let url = URL(string: "\(Constants.baseURL)/me") else { fatalError("Failed to create URL") }
+        guard let url = URL(string: "\(AuthConfiguration.standard.baseURL)/me") else { fatalError("Failed to create URL") }
         
         var request = URLRequest(url: url)
         

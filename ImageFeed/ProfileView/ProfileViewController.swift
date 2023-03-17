@@ -9,7 +9,13 @@ import Foundation
 import UIKit
 import Kingfisher
 
-class ProfileViewController: UIViewController {
+public protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    func updateAvatar()
+}
+
+class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+    var presenter: ProfileViewPresenterProtocol?
     
     private let imageView = UIImageView(image: UIImage(named: "userpick"))
     private let nameSurname = UILabel()
@@ -22,9 +28,7 @@ class ProfileViewController: UIViewController {
         action: #selector(Self.didTapButton)
     )
     private var oAuth2TokenStorage: OAuth2TokenStorageProtocol = OAuth2TokenStorage()
-    private let profileService = ProfileService.shared
-    private var profileImageServiceObserver: NSObjectProtocol?      // 1
-    
+    private let profileService = ProfileService.shared    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,19 +86,9 @@ class ProfileViewController: UIViewController {
             
         }
         
-        profileImageServiceObserver = NotificationCenter.default    // 2
-            .addObserver(
-                forName: ProfileImageService.DidChangeNotification, // 3
-                object: nil,                                        // 4
-                queue: .main                                        // 5
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAvatar()                                 // 6
-            }
-        updateAvatar()
     }
     
-    func updateAvatar() {                                   // 8
+    func updateAvatar() {
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
@@ -108,18 +102,14 @@ class ProfileViewController: UIViewController {
     
     func onLogout() {
         OAuth2TokenStorage().clearToken()
-        print("2")
         WebViewViewController.cleanCookies()
         tabBarController?.dismiss(animated: true)
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
         window.rootViewController = SplashViewController()
-        print("3")
-        print(4)
     }
     
     @objc
     private func didTapButton() {
-        print("1")
         onLogout()
     }
 }

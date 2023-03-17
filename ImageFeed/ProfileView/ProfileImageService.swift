@@ -44,7 +44,7 @@ final class ProfileImageService {
     }
     
     private func makeRequest(username: String, token: String) -> URLRequest {
-        guard let url = URL(string: "\(Constants.baseURL)/users/\(username)") else { fatalError("Failed to create URL") }
+        guard let url = URL(string: "\(AuthConfiguration.standard.baseURL)/users/\(username)") else { fatalError("Failed to create URL") }
         
         var request = URLRequest(url: url)
         

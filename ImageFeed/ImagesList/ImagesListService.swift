@@ -114,7 +114,7 @@ final class ImagesListService {
     }
     
     private func makeRequest(token: String, page: Int, per_page: Int = 10) -> URLRequest? {
-        if var urlComponents = URLComponents(string: "\(Constants.baseURL)/photos") {
+        if var urlComponents = URLComponents(string: "\(AuthConfiguration.standard.baseURL)/photos") {
             urlComponents.queryItems = [
                 URLQueryItem(name: "page", value: String(page)),
                 URLQueryItem(name: "per_page", value: String(per_page))
@@ -130,7 +130,7 @@ final class ImagesListService {
     
     
     private func makeRequest(token: String, photoId: String, isLike: Bool) -> URLRequest? {
-        if var urlComponents = URLComponents(string: "\(Constants.baseURL)/photos/\(photoId)/like") {
+        if var urlComponents = URLComponents(string: "\(AuthConfiguration.standard.baseURL)/photos/\(photoId)/like") {
             var request = URLRequest(url: urlComponents.url!)
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             if isLike {
