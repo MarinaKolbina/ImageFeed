@@ -1,10 +1,17 @@
 import UIKit
 import Kingfisher
 
-class ImagesListViewController: UIViewController {
+protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImagesListViewPresenterProtocol { get set }
+    func updateTableViewAnimated()
+}
+
+class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
+    var presenter: ImagesListViewPresenterProtocol = ImagesListViewPresenter()
+    
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
     private let imagesListService = ImagesListService()
-    private var imageListServiceObserver: NSObjectProtocol?
+//    private var imageListServiceObserver: NSObjectProtocol?
     private let oauth2TokenStorage = OAuth2TokenStorage()
     private var photosName = [String]()
     private var photos: [Photo] = []
@@ -14,7 +21,8 @@ class ImagesListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        observeImagesLoad()
+        presenter.view = self
+        presenter.viewDidLoad()
         imagesListService.fetchPhotosNextPage(oauth2TokenStorage.token!)
         photosName = Array(0..<20).map{ "\($0)" }
     }
@@ -43,7 +51,7 @@ class ImagesListViewController: UIViewController {
         }
     }
     
-    private func updateTableViewAnimated() {
+    func updateTableViewAnimated() {
         let oldCount = photos.count
         let newCount = imagesListService.photos.count
         photos = imagesListService.photos
@@ -57,18 +65,18 @@ class ImagesListViewController: UIViewController {
         }
     }
     
-    private func observeImagesLoad() {
-        imageListServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ImagesListService.DidChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateTableViewAnimated()
-            }
-        
-    }
+//    private func observeImagesLoad() {
+//        imageListServiceObserver = NotificationCenter.default
+//            .addObserver(
+//                forName: ImagesListService.DidChangeNotification,
+//                object: nil,
+//                queue: .main
+//            ) { [weak self] _ in
+//                guard let self = self else { return }
+//                self.updateTableViewAnimated()
+//            }
+//
+//    }
 }
 
 extension ImagesListViewController: UITableViewDataSource {
@@ -114,7 +122,6 @@ extension ImagesListViewController {
         cell.cellImage.image = image
         cell.dateLabel.text = dateFormatter.string(from: Date())
         
-//        let isLiked = indexPath.row % 2 == 0
         let likeImage = UIImage(named: "like_button_off")
         cell.likeButton.setImage(likeImage, for: .normal)
     }

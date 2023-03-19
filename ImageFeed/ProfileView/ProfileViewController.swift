@@ -10,12 +10,12 @@ import UIKit
 import Kingfisher
 
 public protocol ProfileViewControllerProtocol: AnyObject {
-    var presenter: ProfileViewPresenterProtocol? { get set }
+    var presenter: ProfileViewPresenterProtocol { get set }
     func updateAvatar()
 }
 
 class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
-    var presenter: ProfileViewPresenterProtocol?
+    var presenter: ProfileViewPresenterProtocol = ProfileViewPresenter()
     
     private let imageView = UIImageView(image: UIImage(named: "userpick"))
     private let nameSurname = UILabel()
@@ -32,6 +32,8 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter.view = self
+        presenter.viewDidLoad()
         
         imageView.tintColor = .gray
         imageView.translatesAutoresizingMaskIntoConstraints = false

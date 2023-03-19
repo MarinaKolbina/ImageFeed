@@ -25,7 +25,6 @@ extension URLSession {
                         fulfillCompletionOnMainThread(.failure(error))
                     }
                 } else {
-//                    fulfillCompletionOnMainThread(.failure(error!))
                     fulfillCompletionOnMainThread(.failure(NSError(domain:"", code: statusCode)))
                 }
             } else if let error = error {
