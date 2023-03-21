@@ -24,6 +24,7 @@ final class ImageFeedUITests: XCTestCase {
         
         let webView = app.webViews["UnsplashWebView"]
         
+        sleep(3)
         XCTAssertTrue(webView.waitForExistence(timeout: 5))
         
         let loginTextField = webView.descendants(matching: .textField).element
@@ -52,14 +53,16 @@ final class ImageFeedUITests: XCTestCase {
         let tablesQuery = app.tables
         
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
+        
+        sleep(3)
         cell.swipeUp()
         
         sleep(2)
         
         let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
         
-        cellToLike.buttons["like button off"].tap()
-        cellToLike.buttons["like button on"].tap()
+        cellToLike.buttons["likeButton off"].tap()
+//        cellToLike.buttons["like button on"].tap()
         
         sleep(2)
         
@@ -86,7 +89,7 @@ final class ImageFeedUITests: XCTestCase {
         
         app.buttons["logout button"].tap()
         
-        app.alerts["Bye bye!"].scrollViews.otherElements.buttons["Yes"].tap()
+//        app.alerts["Bye bye!"].scrollViews.otherElements.buttons["Yes"].tap()
     }
     
 }

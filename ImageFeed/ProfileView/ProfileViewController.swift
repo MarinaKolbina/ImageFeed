@@ -69,6 +69,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         profileDescription.topAnchor.constraint(equalTo: username.bottomAnchor, constant: 8).isActive = true
         
         logOutButton.tintColor = .red
+        logOutButton.accessibilityIdentifier = "logout button"
         logOutButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(logOutButton)
         logOutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26).isActive = true
