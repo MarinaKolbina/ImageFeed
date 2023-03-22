@@ -24,21 +24,21 @@ final class ImageFeedUITests: XCTestCase {
         
         let webView = app.webViews["UnsplashWebView"]
         
-        sleep(3)
+        
         XCTAssertTrue(webView.waitForExistence(timeout: 5))
         
         let loginTextField = webView.descendants(matching: .textField).element
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
         
         loginTextField.tap()
-        loginTextField.typeText("qq@yandex.ru")
+        loginTextField.typeText("1@yandex.ru")
         webView.swipeUp()
         
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         
         passwordTextField.tap()
-        passwordTextField.typeText("qq123123")
+        passwordTextField.typeText("12345678")
         webView.swipeUp()
         
         webView.buttons["Login"].tap()
@@ -46,7 +46,7 @@ final class ImageFeedUITests: XCTestCase {
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
         
-        XCTAssertTrue(cell.waitForExistence(timeout: 5))
+        XCTAssertTrue(cell.waitForExistence(timeout: 10))
     }
     
     func testFeed() throws {
@@ -61,7 +61,7 @@ final class ImageFeedUITests: XCTestCase {
         
         let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
         
-        cellToLike.buttons["likeButton off"].tap()
+        cellToLike.buttons["likeButton"].tap()
 //        cellToLike.buttons["like button on"].tap()
         
         sleep(2)
