@@ -301,7 +301,6 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="g4u-tx-u2Z"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <accessibility key="accessibilityConfiguration" identifier="UnsplashWebView"/>
                         <constraints>
                             <constraint firstItem="YAZ-gK-mRQ" firstAttribute="top" secondItem="g4u-tx-u2Z" secondAttribute="top" constant="40" id="113-rc-e4G"/>
                             <constraint firstItem="1nF-hU-Kv0" firstAttribute="top" secondItem="g4u-tx-u2Z" secondAttribute="top" id="2gN-5Z-PRc"/>
