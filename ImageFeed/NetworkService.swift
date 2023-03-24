@@ -33,6 +33,7 @@ extension URLSession {
                 fulfillCompletionOnMainThread(.failure(NSError(domain:"", code: 0)))
             }
         })
+        task.resume()
         return task
     }
 }

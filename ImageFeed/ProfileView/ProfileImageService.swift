@@ -24,7 +24,10 @@ final class ProfileImageService {
         
         let request = makeRequest(username: username, token: token)
         
-        let task = session.objectTask(for: request) { [weak self] (result: Result<ProfileImage, Error>) in
+        if task != nil {
+            return
+        }
+        task = session.objectTask(for: request) { [weak self] (result: Result<ProfileImage, Error>) in
             guard let self = self else { return }
             switch result {
             case .success(let profileImage):
@@ -39,8 +42,9 @@ final class ProfileImageService {
                 completion(.failure(error))
                 break
             }
+            self.task = nil
         }
-        task.resume()
+        
     }
     
     private func makeRequest(username: String, token: String) -> URLRequest {

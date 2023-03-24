@@ -23,7 +23,6 @@ final class OAuth2Service {
         lastCode = code
         let task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             guard let self = self else { return }
-            self.task = nil
             switch result {
             case .success(let tokenBody):
                 completion(.success(tokenBody.accessToken))
@@ -33,8 +32,8 @@ final class OAuth2Service {
                 UIBlockingProgressHUD.dismiss()
                 break
             }
+            self.task = nil
         }
-        task.resume()
     }
     
     private func makeRequest(code: String) -> URLRequest? {

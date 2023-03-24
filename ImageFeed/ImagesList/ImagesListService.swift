@@ -10,6 +10,7 @@ import Foundation
 final class ImagesListService {
     private (set) var photos: [Photo] = []
     private var task: URLSessionTask?
+    private var likeTask: URLSessionTask?
     private var lastLoadedPage: Int?
     static let DidChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     static let shared = ImagesListService()
@@ -23,23 +24,20 @@ final class ImagesListService {
         
         let request = makeRequest(token: token, page: nextPage)
         guard let request = request else { return }
-        if task == nil {
-            let task = session.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
-                guard let self = self else { return }
-                switch result {
-                case .success(let photoResults):
-                    self.appendNewPhotos(data: photoResults)
-                    self.lastLoadedPage = nextPage
-                case .failure(let error):
-                    print(error)
-                    break
-                }
-            }
-            task.resume()
-        }
-        
-        else {
+        if task != nil {
             return
+        }
+        task = session.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let photoResults):
+                self.appendNewPhotos(data: photoResults)
+                self.lastLoadedPage = nextPage
+            case .failure(let error):
+                print(error)
+                break
+            }
+            self.task = nil
         }
     }
     
@@ -71,24 +69,24 @@ final class ImagesListService {
         let session = URLSession.shared
         let request = makeRequest(token: token, photoId: photoId, isLike: isLike)
         guard let request = request else { return }
-        if task == nil {
-            let task = session.objectTask(for: request) { [weak self] (result: Result<LikePhotoResult, Error>) in
-                guard let self = self else { return }
-                switch result {
-                case .success(let likePhotoResults):
-                    self.updatePhotoInfo(photoId: photoId)
-                    print("changed like on \(likePhotoResults.photo.id)")
-                    completion(.success(Void()))
-                case .failure(let error):
-                    print(error)
-                    completion(.failure(error))
-                }
-            }
-            task.resume()
-        }
-        else {
+        
+        if likeTask != nil {
             return
         }
+        likeTask = session.objectTask(for: request) { [weak self] (result: Result<LikePhotoResult, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let likePhotoResults):
+                self.updatePhotoInfo(photoId: photoId)
+                print("changed like on \(likePhotoResults.photo.id)")
+                completion(.success(Void()))
+            case .failure(let error):
+                print(error)
+                completion(.failure(error))
+            }
+            self.likeTask = nil
+        }
+
     }
 
     func updatePhotoInfo(photoId: String) {

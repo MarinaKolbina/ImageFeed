@@ -100,7 +100,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-880" y="-651"/>
+            <point key="canvasLocation" x="-880.15267175572512" y="-651.4084507042254"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="eIG-fT-WbA">
@@ -149,6 +149,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YXB-WF-vaE">
                                 <rect key="frame" x="8" y="67" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="nav back button white"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="F6k-hf-dGs"/>
                                     <constraint firstAttribute="width" constant="48" id="zgz-vV-mdx"/>

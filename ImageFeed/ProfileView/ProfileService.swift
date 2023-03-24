@@ -24,7 +24,10 @@ final class ProfileService {
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         let session = URLSession.shared
         let request = makeRequest(token: token)
-        let task = session.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
+        if task != nil {
+            return
+        }
+        task = session.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             guard let self = self else { return }
             switch result {
             case .success(let profileResult):
@@ -38,8 +41,9 @@ final class ProfileService {
                 UIBlockingProgressHUD.dismiss()
                 break
             }
+            self.task = nil
         }
-        task.resume()
+        
     }
     
     func updateProfileDetails(profile: Profile) {
