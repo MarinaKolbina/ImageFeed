@@ -5,6 +5,7 @@
 //  Created by Marina Kolbina on 09/01/2023.
 //
 
+import Foundation
 import UIKit
 
 final class SplashViewController: UIViewController {
@@ -12,6 +13,22 @@ final class SplashViewController: UIViewController {
     
     private let oauth2Service = OAuth2Service()
     private let oauth2TokenStorage = OAuth2TokenStorage()
+    private let profileService = ProfileService.shared
+    private var alertPresenter: AlertPresenter?
+    
+    private let practicumLogoView: UIImageView = {
+            let imageView = UIImageView(image: UIImage(named: "practicumLogoView"))
+            imageView.tintColor = UIColor(named: "YP White")
+            imageView.contentMode = .scaleAspectFit
+
+            return imageView
+        }()
+        
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        alertPresenter = AlertPresenter(viewController: self)
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -40,33 +57,103 @@ final class SplashViewController: UIViewController {
             switchToTabBarController()
         } else {
             // Show Auth Screen
-            performSegue(withIdentifier: ShowAuthenticationScreenSegueIdentifier, sender: nil)
+            // performSegue(withIdentifier: ShowAuthenticationScreenSegueIdentifier, sender: nil)
+            let storyboard = UIStoryboard(name: "Main", bundle: .main)
+            guard let authViewController = storyboard.instantiateViewController(
+                withIdentifier: "AuthViewController"
+            ) as? AuthViewController else {
+                return
+            }
+            authViewController.delegate = self
+            authViewController.modalPresentationStyle = .fullScreen
+            present(authViewController, animated: true)
         }
     }
+}
+
+//extension SplashViewController {
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == ShowAuthenticationScreenSegueIdentifier {
+//            guard
+//                let navigationController = segue.destination as? UINavigationController,
+//                let viewController = navigationController.viewControllers[0] as? AuthViewController
+//            else { fatalError("Failed to prepare for \(ShowAuthenticationScreenSegueIdentifier)") }
+//            viewController.delegate = self
+//        } else {
+//            super.prepare(for: segue, sender: sender)
+//        }
+//    }
+//}
+
+extension SplashViewController: AuthViewControllerDelegate {
+    func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
+        self.switchToTabBarController()
+        UIBlockingProgressHUD.show()
+        vc.dismiss(animated: true)
+        self.fetchOAuthToken(code)
+    }
+    
+    private func fetchOAuthToken(_ code: String) {
+        oauth2Service.fetchOAuthToken(code) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let token):
+                self.fetchProfile(token: token)
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
+                
+                let alertModel = AlertModel(
+                    title: "Что-то пошло не так(",
+                    message: "Не удалось войти в систему",
+                    buttonText: "Ок")
+                self.alertPresenter?.presentAlert(model: alertModel)
+                
+                break
+            }
+        }
+    }
+    
+    private func fetchProfile(token: String) {
+        profileService.fetchProfile(token) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(profileResult):
+                ProfileImageService.shared.fetchProfileImageURL(username: profileResult.username) { _ in }
+                self.profileService.updateProfileDetails(profile: profileResult)
+                UIBlockingProgressHUD.dismiss()
+                self.switchToTabBarController()
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
+                
+                let alertModel = AlertModel(
+                    title: "Что-то пошло не так(",
+                    message: "Не удалось войти в систему",
+                    buttonText: "Ок")
+                self.alertPresenter?.presentAlert(model: alertModel)
+                
+                break
+            }
+        }
+    }
+    
 }
 
 extension SplashViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == ShowAuthenticationScreenSegueIdentifier {
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers[0] as? AuthViewController
-            else { fatalError("Failed to prepare for \(ShowAuthenticationScreenSegueIdentifier)") }
-            viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-}
+    private func configureViewComponents() {
+        view.backgroundColor = UIColor(named: "YP Black")
+        practicumLogoView.translatesAutoresizingMaskIntoConstraints = false
 
-extension SplashViewController: AuthViewControllerDelegate {
-    func authViewController(_ vc: AuthViewController, _ didAuthenticate: Bool) {
-        if didAuthenticate {
-            switchToTabBarController()
-            vc.dismiss(animated: true)
-        } else {
-            // TODO [Sprint 11]
-            print("error")
-        }
+        view.addSubview(practicumLogoView)
+
+        NSLayoutConstraint.activate([
+            practicumLogoView.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor),
+            practicumLogoView.centerYAnchor.constraint(
+                equalTo: view.centerYAnchor),
+            practicumLogoView.widthAnchor.constraint(
+                equalTo: view.widthAnchor, multiplier: 0.2),
+            practicumLogoView.heightAnchor.constraint(
+                equalTo: practicumLogoView.widthAnchor)
+        ])
     }
 }

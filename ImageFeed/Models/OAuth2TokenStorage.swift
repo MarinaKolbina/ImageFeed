@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftKeychainWrapper
 
 protocol OAuth2TokenStorageProtocol {
     var token: String? { get set }
@@ -21,10 +22,16 @@ class OAuth2TokenStorage: OAuth2TokenStorageProtocol {
     
     var token: String? {
         get {
-            return userDefaults.string(forKey: Keys.bearerToken.rawValue)
+            return KeychainWrapper.standard.string(forKey: Keys.bearerToken.rawValue)
         }
         set {
-            userDefaults.set(newValue, forKey: Keys.bearerToken.rawValue)
+            guard let newValue = newValue else { return }
+            let isSuccess = KeychainWrapper.standard.set(newValue, forKey: Keys.bearerToken.rawValue)
+            guard isSuccess else { return }
         }
+    }
+    
+    func clearToken() {
+        KeychainWrapper.standard.removeAllKeys()
     }
 }

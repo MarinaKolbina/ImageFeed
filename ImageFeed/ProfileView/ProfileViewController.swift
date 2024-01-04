@@ -7,8 +7,15 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
-class ProfileViewController: UIViewController {
+public protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol { get set }
+    func updateAvatar()
+}
+
+class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+    var presenter: ProfileViewPresenterProtocol = ProfileViewPresenter()
     
     private let imageView = UIImageView(image: UIImage(named: "userpick"))
     private let nameSurname = UILabel()
@@ -20,10 +27,13 @@ class ProfileViewController: UIViewController {
         target: self,
         action: #selector(Self.didTapButton)
     )
-    
+    private var oAuth2TokenStorage: OAuth2TokenStorageProtocol = OAuth2TokenStorage()
+    private let profileService = ProfileService.shared    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter.view = self
+        presenter.viewDidLoad()
         
         imageView.tintColor = .gray
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -59,13 +69,50 @@ class ProfileViewController: UIViewController {
         profileDescription.topAnchor.constraint(equalTo: username.bottomAnchor, constant: 8).isActive = true
         
         logOutButton.tintColor = .red
+        logOutButton.accessibilityIdentifier = "logout button"
         logOutButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(logOutButton)
         logOutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26).isActive = true
         logOutButton.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true
+        
+        profileService.fetchProfile(oAuth2TokenStorage.token!) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(profile):
+                self.nameSurname.text = profile.username
+                self.username.text = profile.username
+                self.profileDescription.text = profile.bio
+            case let .failure(error):
+                // TODO [Sprint 11] Показать ошибку
+                break
+            }
+            
+        }
+        
+    }
+    
+    func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        imageView.kf.setImage(with: url,
+                              placeholder: UIImage(named: "userpick"),
+                              options: [.transition(.fade(1)),
+                                        .cacheOriginalImage
+                              ])
+    }
+    
+    func onLogout() {
+        OAuth2TokenStorage().clearToken()
+        WebViewViewController.cleanCookies()
+        tabBarController?.dismiss(animated: true)
+        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+        window.rootViewController = SplashViewController()
     }
     
     @objc
     private func didTapButton() {
+        onLogout()
     }
 }

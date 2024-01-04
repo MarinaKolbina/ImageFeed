@@ -13,7 +13,16 @@ protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewControllerDidCancel(_ vc: WebViewViewController)
 }
 
-final class WebViewViewController: UIViewController {
+public protocol WebViewViewControllerProtocol: AnyObject {
+    var presenter: WebViewPresenterProtocol? { get set }
+    func load(request: URLRequest)
+    func setProgressValue(_ newValue: Float)
+    func setProgressHidden(_ isHidden: Bool)
+}
+
+final class WebViewViewController: UIViewController, WebViewViewControllerProtocol {
+    var presenter: WebViewPresenterProtocol?
+    
     @IBOutlet private var webView: WKWebView!
     
     @IBOutlet weak var progressView: UIProgressView!
@@ -23,29 +32,16 @@ final class WebViewViewController: UIViewController {
     @IBAction private func didTapBackButton(_ sender: Any?) {
         delegate?.webViewViewControllerDidCancel(self)
     }
-
+    private var estimatedProgressObservation: NSKeyValueObservation?
+    
     override func viewDidLoad() {
+        super.viewDidLoad()
         webView.navigationDelegate = self
-        
-        let oauthLink = getOauthLink()
-        let request = URLRequest(url: oauthLink)
-        
-        webView.load(request)
-        updateProgress()
+        presenter?.viewDidLoad()
+        webView.accessibilityIdentifier = "UnsplashWebView"
+
     }
     
-    func getOauthLink() -> URL {
-        var urlComponents = URLComponents(string: Constants.authorizeURL)!
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scopes", value: Constants.accessScope)
-        ]
-        return urlComponents.url!
-        }
-    
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -54,14 +50,13 @@ final class WebViewViewController: UIViewController {
             forKeyPath: #keyPath(WKWebView.estimatedProgress),
             options: .new,
             context: nil)
-        updateProgress()
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
     }
-
+    
     override func observeValue(
         forKeyPath keyPath: String?,
         of object: Any?,
@@ -69,7 +64,7 @@ final class WebViewViewController: UIViewController {
         context: UnsafeMutableRawPointer?)
     {
         if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
+            presenter?.didUpdateProgressValue(webView.estimatedProgress)
         } else {
             super.observeValue(forKeyPath: keyPath,
                                of: object,
@@ -77,10 +72,17 @@ final class WebViewViewController: UIViewController {
                                context: context)
         }
     }
-
-    private func updateProgress() {
-        progressView.progress = Float(webView.estimatedProgress)
-        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    
+    func setProgressValue(_ newValue: Float) {
+        progressView.progress = newValue
+    }
+    
+    func setProgressHidden(_ isHidden: Bool) {
+        progressView.isHidden = isHidden
+    }
+    
+    func load(request: URLRequest) {
+        webView.load(request)
     }
 }
 
@@ -97,18 +99,23 @@ extension WebViewViewController: WKNavigationDelegate {
             decisionHandler(.allow)
         }
     }
-
+    
     private func code(from navigationAction: WKNavigationAction) -> String? {
-        if
-            let url = navigationAction.request.url,
-            let urlComponents = URLComponents(string: url.absoluteString),
-            urlComponents.path == "/oauth/authorize/native",
-            let items = urlComponents.queryItems,
-            let codeItem = items.first(where: { $0.name == "code" })
-        {
-            return codeItem.value
-        } else {
-            return nil
+        if let url = navigationAction.request.url {
+            return presenter?.code(from: url)
+        }
+        return nil
+    }
+    
+    static func cleanCookies() {
+        // Очищаем все куки из хранилища.
+        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+        // Запрашиваем все данные из локального хранилища.
+        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+            // Массив полученных записей удаляем из хранилища.
+            records.forEach { record in
+                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+            }
         }
     }
 }
